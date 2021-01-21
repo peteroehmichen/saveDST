@@ -14,6 +14,10 @@ canvas.addEventListener("mousedown", (e) => {
     canvas.addEventListener("mousemove", draw);
 });
 
+// if (document.getElementsByClassName("storedSig")) {
+//     printCanvas();
+// }
+
 function draw(e) {
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
