@@ -1,0 +1,27 @@
+<div class="register">
+<h2>Please register to our website...</h2>
+    <form method="post">
+        <input type="text" name="firstName" placeholder="First Name">
+        <input type="text" name="lastName" placeholder="Last Name">
+        <input type="text" name="city" placeholder="Your City">
+        <input type="text" name="email" placeholder="your email address">
+        <input type="text" name="plainPW" placeholder="password">
+        <input name="_csrf" value="{{csrfToken}}" type="hidden">
+        <button name="register" value="true" type="submit">Register</button>
+    </form>
+</div>
+
+<div class="logIn">
+<h2>alternatively LogIn to our website...</h2>
+    <form method="post">
+        <input type="text" name="email" placeholder="your email address">
+        <input type="text" name="plainPW" placeholder="password">
+        <input name="_csrf" value="{{csrfToken}}" type="hidden">
+        <button name="login" value="true" type="submit">Log In</button>
+    </form>
+</div>
+<div class="errorMessage">
+   {{#if dbError}}{{>dbError}}{{/if}}
+   {{#if dataError}}{{>dataError}}{{/if}}
+   {{#if cookieError}}{{>cookieError}}{{/if}}
+</div>

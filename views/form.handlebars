@@ -1,7 +1,5 @@
 <h2>Please sign the following form...</h2>
 <form method="post">
-    <input type="text" name="firstName" placeholder="First Name">
-    <input type="text" name="lastName" placeholder="Last Name">
     <input name="_csrf" value="{{csrfToken}}" type="hidden">
     <input id="sigDataURL" name="sigDataURL" type="hidden">
     <div class="signature">
@@ -11,10 +9,7 @@
             <input type="color" name="color" class="sigFunction sigColor" value="#0000ff">
         </div>
     </div>
+    <p>{{first}} {{last}} ({{city}})</p>
     <button type="submit">Submit</button>
 </form>
-<div class="errorMessage">
-   {{#if dbError}}{{>dbError}}{{/if}}
-   {{#if dataError}}{{>dataError}}{{/if}}
-   {{#if cookieError}}{{>cookieError}}{{/if}}
-</div>
+
