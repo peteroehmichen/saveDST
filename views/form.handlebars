@@ -2,7 +2,19 @@
 <form method="post">
     <input type="text" name="firstName" placeholder="First Name">
     <input type="text" name="lastName" placeholder="Last Name">
+    <input name="_csrf" value="{{csrfToken}}" type="hidden">
     <input id="sigDataURL" name="sigDataURL" type="hidden">
-    <canvas id="signature" width="500px" height="100px"></canvas>
+    <div class="signature">
+        <canvas id="signature" width="400px" height="80px"></canvas>
+        <div class="sigFunctions">
+            <div class="sigFunction sigClear">↩︎</div>
+            <input type="color" name="color" class="sigFunction sigColor" value="#0000ff">
+        </div>
+    </div>
     <button type="submit">Submit</button>
 </form>
+<div class="errorMessage">
+   {{#if dbError}}{{>dbError}}{{/if}}
+   {{#if dataError}}{{>dataError}}{{/if}}
+   {{#if cookieError}}{{>cookieError}}{{/if}}
+</div>

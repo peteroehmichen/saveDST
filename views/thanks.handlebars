@@ -1,4 +1,5 @@
-<h2>Thank you {{name}} for signing</h2>
+<h2>Thank you {{participant.first}} {{participant.last}} for signing</h2>
+<img class="yourSignature" src="{{participant.signature}}" alt="signature">
 <p>this is not you? click <a href="/new">here</a> to sign the petition yourself</p>
 
-<p>click along to see the <a href="/participants">others</a></p>
+<p>click along to see <a href="/participants">all {{count}} Participants</a></p>

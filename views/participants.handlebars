@@ -1,22 +1,15 @@
 <h2>we display the {{count}} participants here</h2>
 
-<ul>
-    {{#part}}
-        <li>{{first}} {{last}}
-            <input class="storedSig" name="storedSig" type="hidden" value="{{signature}}">
-            <canvas class="second" width="200px" height="40px"></canvas>
-
+<table class="listedParticipants">
+    <thead><td>Date/Time</td><td>Full Name</td><td>Signature</td></thead>
+    <tbody>
+        {{#part}}
+        <tr>
+            <td>{{date}}</td>
+            <td>{{first}} {{last}}</td>
+            <td><img class="sigInList" src="{{signature}}"></td>
+        </tr>
     {{/part}}
-    <script>
-        const dataURLs = document.getElementsByClassName("storedSig");
-        const canvas = document.getElementsByClassName("second");
-        for (var i = 0; i < dataURLs.length; i++) {
-            let ctx = canvas[i].getContext("2d");
-            let img = new Image;
-            img.src = dataURLs[i].value;
-            img.onload = function () {
-                ctx.drawImage(img, 0, 0, 200, 40);
-            }
-        }
-    </script>
-</ul>
+    </tbody>
+</table>
+<p><a href="/thanks">go back!</a></p>

@@ -7,6 +7,57 @@ body {
     background-color: azure;
 }
 
+.signature {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    width: 400px;
+}
+
 canvas {
-    background-color: #fff;
+    border-bottom: 1px dotted black;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sigFunctions {
+    position: absolute;
+    right: 0;
+    display: flex;
+}
+
+.sigFunction {
+    width: 25px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 1px;
+    text-align: center;
+    border: 1px dotted black;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-top: 1px;
+}
+
+img {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px dotted black;
+    width: 400px;
+    height: 80px;
+}
+
+.listedParticipants {
+    margin: 10px;
+    padding: 5px;
+}
+
+thead {
+    font-weight: bold;
+}
+
+td {
+    padding: 5px 20px 5px 5px;
+}
+
+.sigInList {
+    width: 150px;
+    height: 30px;
 }
