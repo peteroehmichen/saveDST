@@ -15,3 +15,15 @@ module.exports.hash = (plainPW) => {
             console.log("Error during hashing PW:", err);
         });
 };
+
+module.exports.fillCurrentUserObj = (obj) => {
+    // console.log("writing to userOBJ:", obj);
+    const activeUser = {
+        id: obj.id,
+        first: obj.first,
+        last: obj.last,
+        city: obj.city,
+        initials: `${obj.first[0].toUpperCase()}${obj.last[0].toUpperCase()}`,
+    };
+    return activeUser;
+};

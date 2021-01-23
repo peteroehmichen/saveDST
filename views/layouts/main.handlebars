@@ -7,9 +7,40 @@
     <title>Petition - Project</title>
 </head>
 <body>
-    <a href="/new"><h1>{{#if logged}}✔{{else}}✘{{/if}}</h1></a>
-    <h1>This is the Petition project</h1>
-    {{{body}}}
+    <header>
+        <div class="headline">
+            <h1>Become a daylight Savings Saviour</h1> 
+        </div>
+        <div class="status">
+            {{!-- <a href="/new">{{#if logged}}<img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut">{{activeUser.initials}}{{/if}}</a> --}}
+            {{#if logged}}<a href="/new">
+                <div class="logPic">{{activeUser.initials}}</div>
+                Log Out
+            </a>{{/if}}
+        </div>
+    </header>
+    <nav>
+            <div class="navRegister">
+                <div class="support"><h2>Support our cause</h2></div>
+                <div class="reg">Register & LogIn<br>{{#if reg}}✅{{else}}❌{{/if}}</div>    
+                <div class="arrow">→</div>
+                <div class="sign">Sign the Petition<br>{{#if sig}}✅{{else}}❌{{/if}}</div>    
+            </div>
+            <div class="arrow">→</div>
+            <div class="navView">
+                <h2>Summary of your data</h2>
+            </div>
+            <div class="arrow">→</div>
+            <div class="navList">
+                <h2>View other Supporters</h2>
+            </div>
+
+    </nav>
+    <main>
+        {{{body}}}
+
+    </main>
+    <footer>© Peter Oehmichen, 2021</footer>
     <script src="script.js"></script>
 </body>
 </html>

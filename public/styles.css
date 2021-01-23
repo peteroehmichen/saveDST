@@ -4,7 +4,204 @@
 }
 
 body {
-    background-color: azure;
+    height: 100vh;
+    width: 100vw;
+    /* background-color: azure; */
+    background-image: url("./bg2.jpg");
+    background-size: cover;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 15% 10% 70% 5%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+h1 {
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px solid black;
+    font-size: 1.1em;
+    margin: 10px 0;
+    width: 90%;
+}
+
+button {
+    width: 90%;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 5px;
+    padding: 5px;
+}
+
+header {
+    padding: 0 10px;
+    position: relative;
+    /* background-color: #fce38a; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status {
+    /* position: absolute; */
+    /* top: 0; */
+    /* right: 0; */
+    width: 5%;
+    text-align: center;
+}
+
+.logPic {
+    margin: 10px;
+    background: #099bdd;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.4em;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+nav {
+    /* background-color: #fce38a; */
+    background-color: rgba(255, 255, 255, 0.75);
+    width: 100%;
+    display: flex;
+    justify-content: stretch;
+    border: 1px dotted black;
+}
+
+nav > div {
+    /* background-color: #eaffd0; */
+    /* background-color: rgba(255, 255, 255, 0.3); */
+    text-align: center;
+    padding: 6px;
+    width: 32%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navRegister > .arrow {
+    font-size: 1em;
+}
+
+nav > .arrow {
+    width: 4%;
+    font-size: 2.3em;
+}
+
+.navRegister {
+    display: grid;
+    grid-template-columns: 4fr 1fr 4fr;
+    grid-template-rows: 2fr 1fr;
+}
+
+.support {
+    grid-column: 1 / 4;
+}
+
+main {
+    /* background-image: url("./bg2.jpg"); */
+    /* background-size: cover; */
+    /* background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/DST_begin.svg"); */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.credentials {
+    margin: auto 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 30%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.credHead {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.registerHeader {
+    width: 50%;
+    height: 100%;
+    padding: 10px;
+}
+
+.loginHeader {
+    width: 50%;
+    height: 100%;
+    padding: 10px;
+}
+
+.credBody {
+    width: 100%;
+    height: 80%;
+}
+
+.credBody > div {
+    padding: 20px;
+    flex-direction: column;
+}
+
+.register {
+    display: flex;
+}
+
+.credentials p {
+    font-size: 0.9em;
+    padding-bottom: 5px;
+}
+
+.login {
+    display: flex;
+}
+
+.activeCred {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.registerMessage {
+    padding: 5px;
+    width: 100%;
+    height: 10%;
+}
+
+.error {
+    background-color: rgba(255, 255, 255, 0.75);
+    color: red;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.explanation {
+    width: 60%;
+    height: 90%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+footer {
+    background-color: #95e1d3;
 }
 
 .signature {
