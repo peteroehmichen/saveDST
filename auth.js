@@ -16,15 +16,14 @@ module.exports.hash = (plainPW) => {
         });
 };
 
-module.exports.fillCurrentUserObj = (obj) => {
+module.exports.setCurrentUserObj = (obj) => {
     // console.log("writing to userOBJ:", obj);
-    const activeUser = {
+    const user = {
         id: obj.id,
         first: obj.first,
         last: obj.last,
-        city: obj.city,
         email: obj.email,
         initials: `${obj.first[0].toUpperCase()}${obj.last[0].toUpperCase()}`,
     };
-    return activeUser;
+    return user;
 };

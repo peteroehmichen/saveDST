@@ -19,8 +19,16 @@
                 <td class="lastEdit">{{last}}</td>
             </tr>
             <tr class="dataRow">
+                <td>Your Age: </td>
+                <td class="ageEdit">{{age}}</td>
+            </tr>
+            <tr class="dataRow">
                 <td>Your City: </td>
                 <td class="cityEdit">{{city}}</td>
+            </tr>
+            <tr class="dataRow">
+                <td>Your Website: </td>
+                <td class="urlEdit">{{url}}</td>
             </tr>
             <tr class="dataRow">
                 <td>Your E-Mail: </td>
@@ -43,10 +51,12 @@
 <script>
     var firstEdit = document.querySelector(".firstEdit");
     var lastEdit = document.querySelector(".lastEdit");
+    var ageEdit = document.querySelector(".ageEdit");
     var cityEdit = document.querySelector(".cityEdit");
+    var urlEdit = document.querySelector(".urlEdit");
     var edit = document.querySelector(".edit");
     var buttons = document.querySelector(".buttons");
-    var arr = [firstEdit, lastEdit, cityEdit];
+    var arr = [firstEdit, lastEdit, ageEdit, cityEdit, urlEdit];
     var fields = [];
 
     edit.addEventListener("click", (e) => {

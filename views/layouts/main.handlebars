@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <title>Petition - Project</title>
 </head>
 <body>
@@ -11,14 +11,14 @@
         <div class="headline">
             <h1>Become a daylight Savings Saviour</h1> 
         </div>
-        {{#if logged}}<a href="/new"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut"></a>{{/if}}
+        {{#if activeUser.id}}<a href="/new"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut"></a>{{/if}}
     </header>
     <nav>
             <div class="navRegister">
                 <div class="support"><h2>Support our cause</h2></div>
-                <div class="reg">Register & LogIn<br>{{#if reg}}✅{{else}}❌{{/if}}</div>    
+                <div class="reg">Register & LogIn<br>{{#if activeUser.id}}✅{{else}}❌{{/if}}</div>    
                 <div class="arrow">→</div>
-                <div class="sign">Sign the Petition<br>{{#if sig}}✅{{else}}❌{{/if}}</div>    
+                <div class="sign">Sign the Petition<br>{{#if activeUser.signature}}✅{{else}}❌{{/if}}</div>    
             </div>
             <div class="arrow">→</div>
             <div class="navView">
@@ -34,6 +34,6 @@
         {{{body}}}
     </main>
     <footer>© Peter Oehmichen, 2021</footer>
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>

@@ -1,20 +1,15 @@
 <div class="subframeRight">
-
-
-<h1>Site under constuction 💪</h1>
-
-<h2>we display the {{count}} participants here</h2>
-
+<h2>we display all {{count}} participants here</h2>
 <table class="listedParticipants">
-    <thead><td>Date/Time</td><td>Full Name</td><td>Signature</td></thead>
+    <thead><td>Full Name</td><td>Age</td><td>City</td><td>Website</td></thead>
     <tbody>
-        {{#part}}
+        {{#list}}
         <tr>
-            <td>{{date}}</td>
-            <td>{{first}} {{last}}</td>
-            <td><img class="sigInList" src="{{signature}}"></td>
+            <td>{{#if url}}<a href="{{url}}">{{first}} {{last}}</a>{{else}}{{first}} {{last}}{{/if}}</td>
+            <td>{{age}}</td>
+            <td><a href="/participants/{{city}}">{{city}}</a></td>
         </tr>
-    {{/part}}
+    {{/list}}
     </tbody>
 </table>
 <p><a href="/thanks">go back!</a></p>
