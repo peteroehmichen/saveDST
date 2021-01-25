@@ -1,38 +1,6 @@
-<div class="credentials">
-    <div class="credHead">
-        <div class="registerHeader{{#if logField}}{{else}} activeCred{{/if}}">Register</div>
-        <div class="loginHeader{{#if logField}} activeCred{{else}}{{/if}}">Log In</div>
-        
-
-    </div>
-    <div class="credBody">
-        <div class="register{{#if logField}}{{else}} activeCred{{/if}}">
-            <p>In order for you to sign the petition, you will need to create a user account.</p>
-            <p>Based on your email address we make sure, that each supporter is unique.</p>
-            <form method="post">
-                <input type="text" name="firstName" placeholder="First Name">
-                <input type="text" name="lastName" placeholder="Last Name">
-                <input type="text" name="city" placeholder="Your City (optional)">
-                <input type="text" name="email" placeholder="your email address">
-                <input type="text" name="plainPW" placeholder="password">
-                <input name="_csrf" value="{{csrfToken}}" type="hidden">
-                <button name="register" value="true" type="submit">Register</button>
-            </form>
-        </div>
-        <div class="login{{#if logField}} activeCred{{else}}{{/if}}">
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil fugiat necessitatibus expedita, voluptas alias consectetur in officiis non id, provident laboriosam! Quo impedit quis recusandae odit quas ipsam consequuntur. Officia?</p>
-                <form method="post">
-                <input type="text" name="email" placeholder="your email address">
-                <input type="text" name="plainPW" placeholder="password">
-                <input name="_csrf" value="{{csrfToken}}" type="hidden">
-                <button name="login" value="true" type="submit">Log In</button>
-            </form>
-        </div>
-
-    </div>
-    <div class="registerMessage {{#if registerError}}error{{/if}}">{{registerError}}</div>
+<div class="leftBox">
+    {{>credentials}}
 </div>
-<div class="explanation">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati esse optio vel. Facilis, id tenetur dolores quae deserunt accusantium neque sequi totam voluptate eum possimus culpa molestiae corporis et quisquam!</p>
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cum odio ea, similique at nam maiores? Ullam perferendis deserunt repellendus. Veritatis ut consectetur placeat officia maiores ipsum id, in unde voluptatem?</p>
+<div class="rightBox">
+    {{>explanation}}
 </div>

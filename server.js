@@ -11,6 +11,7 @@ const {
     deleteUser,
     getList,
     getCount,
+    changeUserData,
 } = require("./db");
 const cookieSession = require("cookie-session");
 const { secretOfSession } = require("./secrets.json");
@@ -86,6 +87,7 @@ app.post("/", (req, res) => {
                         first: firstName,
                         last: lastName,
                         city: city,
+                        email: email,
                         initials: `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`,
                     };
                     req.session.userID = result.rows[0].id;
@@ -136,7 +138,7 @@ app.post("/", (req, res) => {
                         return res.render("register", {
                             layout: "main",
                             registerError: "user and password do not match",
-                            logField: "activeCred"
+                            logField: "activeCred",
                         });
                         // more detail: password to existing person wrong!
                         // work more on that...
@@ -147,22 +149,20 @@ app.post("/", (req, res) => {
                     return res.render("register", {
                         layout: "main",
                         registerError: "user and password do not match",
-                        logField: "activeCred"
+                        logField: "activeCred",
                     });
                     // most likely user not found
                 });
         }
     } else {
-        // console.log("unkown error during filling out of form");
         return res.render("register", {
             layout: "main",
-            registerError: "unkown error during filling out the form",
+            registerError: "error during filling of form",
         });
     }
 });
 
 app.get("/new", (req, res) => {
-    // console.log("full refresh");
     req.session = null;
     activeUser = {};
     return res.redirect("/");
@@ -170,11 +170,9 @@ app.get("/new", (req, res) => {
 
 // From here on it is only for users!
 app.use((req, res, next) => {
-    // console.log("you are entering protected space...");
     if (req.session.userID) {
         next();
     } else {
-        // console.log("you are not logged in or registered!");
         return res.render("register", {
             layout: "main",
             registerError: "you are not logged in or registered!",
@@ -183,13 +181,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/petition", (req, res) => {
-    // console.log(
-    //     "active user on (/petition):",
-    //     req.session.userID,
-    //     req.session.signatureID
-    // );
     if (req.session.signatureID) {
-        // console.log("user and signature found - redirect to /thanks");
         return res.redirect("/thanks");
     } else {
         Promise.all([
@@ -213,44 +205,47 @@ app.get("/petition", (req, res) => {
 });
 
 app.post("/petition", (req, res) => {
-    // console.log(
-    //     "active user on (POST /petition):",
-    //     req.session.userID,
-    //     req.session.signatureID
-    // );
-    addSignature(req.session.userID, req.body.sigDataURL)
-        .then((result) => {
-            req.session.signatureID = result.rows[0].id;
-            return res.redirect("/thanks");
-        })
-        .catch((err) => {
-            console.log("Error during writing to DB:", err);
-            return;
+    if (req.body.sigDataURL == "") {
+        return res.render("form", {
+            layout: "main",
+            logged: req.session.userID,
+            activeUser,
+            reg: true,
+            signatureError: "signature cannot be empty",
         });
+    } else {
+        addSignature(req.session.userID, req.body.sigDataURL)
+            .then((result) => {
+                req.session.signatureID = result.rows[0].id;
+                return res.redirect("/thanks");
+            })
+            .catch((err) => {
+                return res.render("form", {
+                    layout: "main",
+                    logged: req.session.userID,
+                    activeUser,
+                    reg: true,
+                    signatureError: "Database error - please try again later",
+                });
+            });
+    }
+
 });
 
 app.use((req, res, next) => {
-    // console.log("you are entering protected space...");
     if (req.session.signatureID) {
         next();
     } else {
-        // console.log("no signature found");
         return res.render("form", {
             layout: "main",
             logged: req.session.userID,
             signatureError: "no signature found",
             activeUser,
-            test: "HP2",
         });
     }
 });
 
 app.get("/thanks", (req, res) => {
-    // console.log(
-    //     "active user on (/thanks):",
-    //     req.session.userID,
-    //     req.session.signatureID
-    // );
     Promise.all([getSignatureByID(req.session.userID), getCount()])
         .then((results) => {
             return res.render("thanks", {
@@ -265,13 +260,87 @@ app.get("/thanks", (req, res) => {
         })
         .catch((err) => {
             console.log("Error during db-request for /thanks:", err);
+            activeUser = {};
+            req.session.userID = null;
+            return res.render("register", {
+                layout: "main",
+                logField: "activeCred",
+                registerError: "Database Error - try again",
+            });
         });
+});
+
+app.post("/thanks", (req, res) => {
+    if (req.body.confirm) {
+        const elements = [
+            req.body.new[0] || activeUser.first,
+            req.body.new[1] || activeUser.last,
+            req.body.new[2] || activeUser.city,
+            req.session.userID,
+        ];
+        changeUserData(elements)
+            .then((result) => {
+                activeUser.first = result.rows[0].first;
+                activeUser.last = result.rows[0].last;
+                activeUser.city = result.rows[0].city;
+                return res.redirect("/thanks");
+            })
+            .catch(() => {
+                console.log("some error");
+                return res.render("register", {
+                    layout: "main",
+                    logField: "activeCred",
+                    registerError: "Database Error - try again",
+                });
+            });
+    } else if (req.body.deleteUser) {
+        deleteUser(req.session.userID)
+            .then(() => res.redirect("/new"))
+            .catch((err) => {
+                activeUser={};
+                req.session.userID = null;
+                return res.render("register", {
+                    layout: "main",
+                    logField: "activeCred",
+                    registerError: "Database Error - try again",
+                });
+            });
+
+    } else if (req.body.sigDel) {
+        req.session.signatureID = null;
+        deleteSignature(req.session.userID)
+            .then(() => res.redirect("/petition"))
+            .catch((err) => {
+                req.session.userID = null;
+                return res.render("register", {
+                    layout: "main",
+                    logField: "activeCred",
+                    registerError: "Database Error - try again",
+                });
+            });
+    } else {
+        return res.render("register", {
+            layout: "main",
+            logField: "activeCred",
+            registerError: "Database Error - try again",
+        });
+    }
 });
 
 // not yet there...
 
 app.get("/participants", (req, res) => {
-    res.send("<h1>Site under constuction 💪</h1>");
+    return res.render("participants", {
+        layout: "main",
+        logged: req.session.userID,
+        // signature: results[0].rows[0].signature,
+        // count: results[1].rows[0].count,
+        activeUser,
+        reg: true,
+        sig: true,
+    });
+    
+    // res.send("<h1>Site under constuction 💪</h1>");
     // console.log("active user on (/participants):", req.session.userID);
     // if (req.session.userID) {
     //     getList()
@@ -294,6 +363,8 @@ app.get("/participants", (req, res) => {
     //     // });
     // }
 });
+
+app.post("/participants", (req, res)=>res.redirect("/thanks"));
 
 app.listen(8080, () => console.log("Petition-Server is listening..."));
 

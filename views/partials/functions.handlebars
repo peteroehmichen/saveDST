@@ -1,0 +1,70 @@
+<div class="subframeLeftTop">
+    <div class="logPic">{{activeUser.initials}}</div>
+    <div class="functionsHead">
+        <h3>Manage your Data</h3>
+    </div>
+</div>
+<div class="subframeLeftMain">
+    <form method="post">
+        <input name="_csrf" value="{{csrfToken}}" type="hidden">
+        <p class="edit">edit</p>
+        <h4>what we know about you</h4>
+        <table>{{#activeUser}}
+            <tr class="dataRow">
+                <td>First Name: </td>
+                <td class="firstEdit">{{first}}</td>
+            </tr>
+            <tr class="dataRow">
+                <td>Last Name: </td>
+                <td class="lastEdit">{{last}}</td>
+            </tr>
+            <tr class="dataRow">
+                <td>Your City: </td>
+                <td class="cityEdit">{{city}}</td>
+            </tr>
+            <tr class="dataRow">
+                <td>Your E-Mail: </td>
+                <td class="emailEdit">{{email}}</td>{{/activeUser}}
+            </tr>
+            <tr class="dataRow">
+                <td>Your Password: </td>
+                <td class="passwordEdit">&bull;&bull;&bull;&bull;</td>
+            </tr>
+        </table>
+        <div class="buttons">
+                    <button type="submit" name="confirm" value="confirm" style="width: 100%">Submit Changes</button>
+                    <button type="submit" name="deleteUser" value="delete" style="color: red; width: 40%">delete User</button>
+                    <button type="submit" name="sigDel" value="sigDel" style="color: red; width: 40%">delete Signature</button>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    var firstEdit = document.querySelector(".firstEdit");
+    var lastEdit = document.querySelector(".lastEdit");
+    var cityEdit = document.querySelector(".cityEdit");
+    var edit = document.querySelector(".edit");
+    var buttons = document.querySelector(".buttons");
+    var arr = [firstEdit, lastEdit, cityEdit];
+    var fields = [];
+
+    edit.addEventListener("click", (e) => {
+        if (e.target.innerText == "edit") {
+            for (var i=0; i<arr.length; i++) {
+                fields[i] = arr[i].innerHTML;
+            }
+            arr.forEach((element) => {
+                element.innerHTML = `<input type="text" name="new" value="${element.innerText}">`;
+            });
+            edit.innerText = "cancel";
+            buttons.style.display = "flex";
+        } else {
+            for (var i = 0; i < arr.length; i++) {
+                arr[i].innerHTML = fields[i];
+            }
+            edit.innerText = "edit";
+            buttons.style.display = "none";
+        }
+    });
+</script>

@@ -23,6 +23,7 @@ module.exports.fillCurrentUserObj = (obj) => {
         first: obj.first,
         last: obj.last,
         city: obj.city,
+        email: obj.email,
         initials: `${obj.first[0].toUpperCase()}${obj.last[0].toUpperCase()}`,
     };
     return activeUser;

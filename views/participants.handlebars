@@ -1,15 +1,6 @@
-<h2>we display the {{count}} participants here</h2>
-
-<table class="listedParticipants">
-    <thead><td>Date/Time</td><td>Full Name</td><td>Signature</td></thead>
-    <tbody>
-        {{#part}}
-        <tr>
-            <td>{{date}}</td>
-            <td>{{first}} {{last}}</td>
-            <td><img class="sigInList" src="{{signature}}"></td>
-        </tr>
-    {{/part}}
-    </tbody>
-</table>
-<p><a href="/thanks">go back!</a></p>
+<div class="leftBox">
+    {{>functions}}
+</div>
+<div class="rightBox">
+    {{>otherPeople}}
+</div>

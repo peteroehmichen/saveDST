@@ -1,43 +1,6 @@
-<h2>Please sign the following form...</h2>
-<form method="post">
-    <input name="_csrf" value="{{csrfToken}}" type="hidden">
-    <input id="sigDataURL" name="sigDataURL" type="hidden">
-    <div class="signature">
-        <canvas id="signature" width="400px" height="80px"></canvas>
-        <div class="sigFunctions">
-            <div class="sigFunction sigClear">↩︎</div>
-            <input type="color" name="color" class="sigFunction sigColor" value="#0000ff">
-        </div>
-    </div>
-    <p>{{activeUser.first}} {{activeUser.last}} ({{activeUser.city}})</p>
-    <button type="submit">Submit</button>
-</form>
-<script>
-    var canvas = document.getElementById("signature");
-    var ctx = canvas.getContext("2d");
-    var clear = document.querySelector(".sigClear");
-
-    clear.addEventListener("click", () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    canvas.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        ctx.strokeStyle = document.querySelector(".sigColor").value;
-        ctx.beginPath();
-        ctx.moveTo(e.offsetX, e.offsetY);
-        canvas.addEventListener("mouseup", (e) => {
-            e.preventDefault();
-            canvas.removeEventListener("mousemove", draw);
-            ctx.closePath();
-            document.getElementById("sigDataURL").value = canvas.toDataURL();
-        });
-        canvas.addEventListener("mousemove", draw);
-    });
-
-    function draw(e) {
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-        ctx.moveTo(e.offsetX, e.offsetY);
-    }
-</script>
+<div class="leftBox">
+    {{>leftPetition}}
+</div>
+<div class="rightBox">
+    {{>signPetition}}
+</div>

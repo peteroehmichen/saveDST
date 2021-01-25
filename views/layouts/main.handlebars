@@ -11,13 +11,7 @@
         <div class="headline">
             <h1>Become a daylight Savings Saviour</h1> 
         </div>
-        <div class="status">
-            {{!-- <a href="/new">{{#if logged}}<img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut">{{activeUser.initials}}{{/if}}</a> --}}
-            {{#if logged}}<a href="/new">
-                <div class="logPic">{{activeUser.initials}}</div>
-                Log Out
-            </a>{{/if}}
-        </div>
+        {{#if logged}}<a href="/new"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut"></a>{{/if}}
     </header>
     <nav>
             <div class="navRegister">
@@ -38,7 +32,6 @@
     </nav>
     <main>
         {{{body}}}
-
     </main>
     <footer>© Peter Oehmichen, 2021</footer>
     <script src="script.js"></script>

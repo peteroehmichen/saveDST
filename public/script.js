@@ -1,46 +1,18 @@
-var support = document.querySelector(".navRegister");
-var summary = document.querySelector(".navView");
-var participants = document.querySelector(".navList");
+// var support = document.querySelector(".navRegister");
+// var summary = document.querySelector(".navView");
+// var participants = document.querySelector(".navList");
 
-support.addEventListener("click", (e) => {
-    alert("Hello");
-});
-summary.addEventListener("click", (e) => {
-    alert("Hello");
-});
-participants.addEventListener("click", (e) => {
-    alert("Hello");
-});
+// support.addEventListener("click", (e) => {
+//     alert("Hello");
+// });
+// summary.addEventListener("click", (e) => {
+//     alert("Hello");
+// });
+// participants.addEventListener("click", (e) => {
+//     alert("Hello");
+// });
 
-var register = document.querySelector(".register");
-var registerHeader = document.querySelector(".registerHeader");
-var login = document.querySelector(".login");
-var loginHeader = document.querySelector(".loginHeader");
 
-if (!login.classList.contains("activeCred")) {
-    login.style.display = "none";
-}
-if (!register.classList.contains("activeCred")) {
-    register.style.display = "none";
-}
-
-loginHeader.addEventListener("click", (e) => {
-    register.style.display = "none";
-    login.style.display = "flex";
-    loginHeader.classList.add("activeCred");
-    login.classList.add("activeCred");
-    register.classList.remove("activeCred");
-    registerHeader.classList.remove("activeCred");
-});
-
-registerHeader.addEventListener("click", (e) => {
-    register.style.display = "flex";
-    login.style.display = "none";
-    loginHeader.classList.remove("activeCred");
-    login.classList.remove("activeCred");
-    register.classList.add("activeCred");
-    registerHeader.classList.add("activeCred");
-});
 
 // var canvas = document.getElementById("signature");
 // var ctx = canvas.getContext("2d");

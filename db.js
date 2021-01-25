@@ -46,8 +46,20 @@ module.exports.addUser = (first, last, city = "", email, password) => {
     return db.query(q, param);
 };
 
-module.exports.deleteUser = (userID) => {
-    return deleteSignature(userID).then(() =>
-        db.query(`DELETE FROM users WHERE user_id = $1`, [userID])
-    );
+module.exports.changeUserData = (arr) => {
+    // const params = [first, last, city, userID];
+    const q = `UPDATE users SET first = $1, last = $2, city = $3 WHERE id = $4 RETURNING first, last, city;`;
+    return db.query(q, arr);
 };
+
+module.exports.deleteUser = (userID) => {
+    return db
+        .deleteSignature(userID)
+        .then(() => db.query(`DELETE FROM users WHERE id = $1`, [userID]));
+};
+
+// module.exports.deleteUser = (userID) => {
+//     return db
+//         .query(`DELETE FROM signatures WHERE user_id = $1`, [userID])
+//         .then(() => db.query(`DELETE FROM users WHERE id = $1`, [userID]));
+// };
