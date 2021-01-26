@@ -366,18 +366,12 @@ td {
 }
 
 .ticker {
-    width: 100%;
-    height: 30%;
-    background-color: #fff;
-}
-
-.ticker {
     position: relative;
     width: 100%;
     height: 35px;
     overflow: hidden;
     /* border-bottom: 5px solid tomato; */
-    background-color: white;
+    background-color: transparent;
 }
 
 .comments {
