@@ -1,11 +1,19 @@
 // middle man between DB and Server
 // holds all queries we'll be using to talk to our DB
 
-const { decodeBase64 } = require("bcryptjs");
+// const { decodeBase64 } = require("bcryptjs");
 const spicedPg = require("spiced-pg");
 const sql = spicedPg(
-    "postgres:postgres:postgres@localhost:5432/adobo-petition"
-); // in String: "DB-Agent": "User" : "Password" @ "server:port/DB"
+    process.env.DATABASE_URL ||
+        "postgres:postgres:postgres@localhost:5432/adobo-petition"
+);
+// const sql = spicedPg(
+//     "postgres:postgres:postgres@localhost:5432/adobo-petition"
+// ); // in String: "DB-Agent": "User" : "Password" @ "server:port/DB"
+/* 
+for heroku if i use a specific user:
+
+*/
 
 // Requests for signatures table
 module.exports.addSignature = (userID, signature) => {
@@ -14,7 +22,7 @@ module.exports.addSignature = (userID, signature) => {
     return sql.query(q, params);
 };
 
-module.exports.deleteSignature = function deleteSignature(userID) {
+module.exports.deleteSignature = (userID) => {
     return sql.query(`DELETE FROM signatures WHERE user_id = $1;`, [userID]);
 };
 
@@ -44,15 +52,45 @@ module.exports.addUser = (first, last, email, password) => {
     return sql.query(q, param);
 };
 
-module.exports.changeUserData = (first, last, userID) => {
-    const params = [first, last, userID];
-    const q = `UPDATE users SET first = $1, last = $2 WHERE id = $3;`;
-    return sql.query(q, params);
+module.exports.changeUserData = (user, password, userID) => {
+    // check if user-mail exists
+    // hash the new password
+    // catch age to be a number
+
+    /*
+1) hash password, then write first, last email pw to user with ID
+    catch error if mail is double
+
+*/
+
+    hash(password)
+        .then((hashedPW) => db.addUser(user.first, user.last, email, hashedPW))
+        .then((result) => {
+            req.session.userID = result.rows[0].id;
+            return res.redirect("/profile");
+        })
+        .catch((err) => {
+            if (err.code == "23505") {
+                errors.register = "email already exists...";
+            } else {
+                errors.register = "unknown DB error while registering user";
+            }
+            return res.redirect("/");
+        });
+
+    const paramUser = [user.first, user.last, user.email];
+    const qUser = ``;
+
+    const promises = [
+        module.exports.setProfileData(user.age, user.city, user.url, userID),
+    ];
+    return Promise.all([promises]);
 };
 
 module.exports.deleteUser = (userID) => {
-    return deleteSignature(userID)
-        .then(() => deleteProfileData(userID))
+    return module.exports
+        .deleteSignature(userID)
+        .then(() => module.exports.deleteProfileData(userID))
         .then(() => sql.query(`DELETE FROM users WHERE id = $1;`, [userID]));
 };
 
@@ -63,14 +101,16 @@ module.exports.getUserProfileByID = (userID) => {
     ]);
 };
 
-module.exports.addProfileData = (age, city, url, userID) => {
+module.exports.setProfileData = (age, city, url, userID) => {
     let params, q;
     if (age == "") {
         params = [city, url, userID];
-        q = `INSERT INTO user_profiles (city, url, user_id) VALUES ($1, $2, $3);`;
+        q = `INSERT INTO user_profiles (city, url, user_id) VALUES ($1, $2, $3) ON CONFLICT (user_id) DO UPDATE SET city = $1, url = $2;`;
+        // q = `INSERT INTO user_profiles (city, url, user_id) VALUES ($1, $2, $3);`;
     } else {
         params = [age, city, url, userID];
-        q = `INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4);`;
+        q = `INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE SET age = $1, city = $2, url = $3;`;
+        // q = `INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4);`;
     }
     return sql.query(q, params);
 };
@@ -81,7 +121,7 @@ module.exports.changeProfileData = (age, city, url, userID) => {
     return sql.query(q, params);
 };
 
-module.exports.deleteProfileData = function deleteProfileData(userID) {
+module.exports.deleteProfileData = (userID) => {
     return sql.query(`DELETE FROM user_profiles WHERE user_id = $1`, [userID]);
 };
 

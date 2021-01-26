@@ -8,34 +8,33 @@
     <form method="post">
         <input name="_csrf" value="{{csrfToken}}" type="hidden">
         <p class="edit">edit</p>
-        <h4>what we know about you</h4>
         <table>{{#activeUser}}
             <tr class="dataRow">
-                <td>First Name: </td>
+                <td>Name: </td>
                 <td class="firstEdit">{{first}}</td>
             </tr>
             <tr class="dataRow">
-                <td>Last Name: </td>
+                <td></td>
                 <td class="lastEdit">{{last}}</td>
             </tr>
             <tr class="dataRow">
-                <td>Your Age: </td>
-                <td class="ageEdit">{{age}}</td>
+                <td>Age: </td>
+                <td class="ageEdit optional">{{age}}</td>
             </tr>
             <tr class="dataRow">
-                <td>Your City: </td>
-                <td class="cityEdit">{{city}}</td>
+                <td>City: </td>
+                <td class="cityEdit optional">{{city}}</td>
             </tr>
             <tr class="dataRow">
-                <td>Your Website: </td>
-                <td class="urlEdit">{{url}}</td>
+                <td>Website: </td>
+                <td class="urlEdit optional">{{url}}</td>
             </tr>
             <tr class="dataRow">
-                <td>Your E-Mail: </td>
+                <td>E-Mail: </td>
                 <td class="emailEdit">{{email}}</td>{{/activeUser}}
             </tr>
             <tr class="dataRow">
-                <td>Your Password: </td>
+                <td>Password: </td>
                 <td class="passwordEdit">&bull;&bull;&bull;&bull;</td>
             </tr>
         </table>
@@ -54,9 +53,11 @@
     var ageEdit = document.querySelector(".ageEdit");
     var cityEdit = document.querySelector(".cityEdit");
     var urlEdit = document.querySelector(".urlEdit");
+    var emailEdit = document.querySelector(".emailEdit");
+    var passwordEdit = document.querySelector(".passwordEdit");
     var edit = document.querySelector(".edit");
     var buttons = document.querySelector(".buttons");
-    var arr = [firstEdit, lastEdit, ageEdit, cityEdit, urlEdit];
+    var arr = [firstEdit, lastEdit, ageEdit, cityEdit, urlEdit, emailEdit, passwordEdit];
     var fields = [];
 
     edit.addEventListener("click", (e) => {
@@ -65,7 +66,15 @@
                 fields[i] = arr[i].innerHTML;
             }
             arr.forEach((element) => {
-                element.innerHTML = `<input type="text" name="new" value="${element.innerText}">`;
+                if (element.classList.contains("optional")) {
+                    element.innerHTML = `<input type="text" name="new" value="${element.innerText}" placeholder="delete data">`;
+                } else if (element.classList.contains("passwordEdit")) {
+                    element.innerHTML = `<input type="text" name="new" placeholder="no changes">`;
+                } else {
+                    element.innerHTML = `<input type="text" name="new" value="${element.innerText}" placeholder="unchanged">`;
+
+                }
+
             });
             edit.innerText = "cancel";
             buttons.style.display = "flex";

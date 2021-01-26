@@ -33,6 +33,7 @@ input {
 
 form {
     padding: 5px;
+    width: 100%;
     /* border: 1px dotted black; */
 }
 
@@ -133,6 +134,7 @@ main {
     display: flex;
     flex-direction: column;
     padding: 10px;
+    /* overflow: auto; */
 }
 
 .credHead {
@@ -204,6 +206,7 @@ main {
     height: 90%;
     background-color: rgba(255, 255, 255, 0.4);
     padding: 10px;
+    overflow: auto;
 }
 
 .subframeRight {
@@ -254,7 +257,7 @@ main {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: flex-start;
-    /* overflow:; */
+    overflow: auto;
 }
 
 .subframeLeftMain input {
@@ -335,6 +338,12 @@ canvas {
 .listedParticipants {
     margin: 10px;
     padding: 5px;
+}
+
+.listedParticipants tr {
+    /* background-color: blueviolet; */
+    border-collapse: collapse;
+    border-bottom: 1px solid black;
 }
 
 thead {

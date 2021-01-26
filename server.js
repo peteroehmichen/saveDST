@@ -96,7 +96,7 @@ app.post("/", (req, res) => {
                 .then((authorized) => {
                     if (authorized[0]) {
                         req.session.userID = authorized[1];
-                        return res.redirect("/profile");
+                        return res.redirect("/petition");
                     } else {
                         errors.register = "user and password do not match";
                         errors.login = "activeCred";
@@ -131,7 +131,14 @@ app.use((req, res, next) => {
         ])
             .then((results) => {
                 activeUser = setCurrentUserObj(results[0].rows[0]);
-                if (results[1].rowCount) {
+                if (!results[1].rowCount && req.url == "/profile") {
+                    next();
+                } else {
+                    if (results[1].rowCount) {
+                        activeUser.age = results[1].rows[0].age;
+                        activeUser.city = results[1].rows[0].city;
+                        activeUser.url = results[1].rows[0].url;
+                    }
                     if (results[2].rowCount) {
                         activeUser.signatureID = results[2].rows[0].id;
                         activeUser.signature = results[2].rows[0].signature;
@@ -149,12 +156,6 @@ app.use((req, res, next) => {
                         } else {
                             return res.redirect("/petition");
                         }
-                    }
-                } else {
-                    if (req.url == "/profile") {
-                        next();
-                    } else {
-                        return res.redirect("/profile");
                     }
                 }
             })
@@ -185,7 +186,7 @@ app.post("/profile", (req, res) => {
         errors.profile = "Website has wrong format";
         return res.redirect("/profile");
     } else {
-        db.addProfileData(
+        db.setProfileData(
             req.body.age,
             req.body.city,
             req.body.url,
@@ -261,26 +262,45 @@ app.get("/thanks", (req, res) => {
 });
 
 app.post("/thanks", (req, res) => {
+    // check url for XSS
+    // check PW not empty
+
+    // if (req.body.url != "" && !req.body.url.startsWith("http")) {
+
     if (req.body.confirm) {
-        const elements = [
-            req.body.new[0] || activeUser.first,
-            req.body.new[1] || activeUser.last,
-            req.body.new[2] || activeUser.last,
-            req.body.new[3] || activeUser.last,
-            req.body.new[4] || activeUser.last,
-            req.session.userID,
-        ];
-        db.changeUserData(elements)
-            .then((result) => {
-                activeUser.first = result.rows[0].first;
-                activeUser.last = result.rows[0].last;
-                return res.redirect("/thanks");
-            })
-            .catch(() => {
-                errors.register = "Database Error - try again";
-                errors.login = "activeCred";
-                return res.redirect("/");
-            });
+        activeUser.age = req.body.new[2];
+        activeUser.city = req.body.new[3];
+        activeUser.url = req.body.new[4];
+        if (req.body.new[0] != "") {
+            activeUser.first = req.body.new[0];
+        }
+        if (req.body.new[1] != "") {
+            activeUser.last = req.body.new[0];
+        }
+        if (req.body.new[5] != "") {
+            activeUser.email = req.body.new[0];
+        }
+        if (activeUser.url != "" && !activeUser.url.startsWith("http")) {
+            errors.edit = "Website must include 'http...'";
+            return res.redirect("/thanks");
+        } else if (activeUser.age != "" && typeof activeUser != "number") {
+            errors.edit = "Age must be empty or a number";
+            return res.redirect("/thanks");
+        } else {
+            // continue here...
+
+            db.changeUserData(activeUser, req.body.new[6], req.session.userID)
+                .then((result) => {
+                    activeUser.first = result.rows[0].first;
+                    activeUser.last = result.rows[0].last;
+                    return res.redirect("/thanks");
+                })
+                .catch(() => {
+                    errors.register = "Database Error - try again";
+                    errors.login = "activeCred";
+                    return res.redirect("/");
+                });
+        }
     } else if (req.body.deleteUser) {
         db.deleteUser(req.session.userID)
             .then(() => res.redirect("/new"))
@@ -348,7 +368,7 @@ app.get("/participants/:city", (req, res) => {
 app.post("/participants", (req, res) => res.redirect(307, "/thanks"));
 app.post("/participants/:city", (req, res) => res.redirect(307, "/thanks"));
 
-app.listen(8080, () => console.log("Petition-Server is listening..."));
+app.listen(process.env.PORT || 8080, () => console.log("Petition-Server is listening..."));
 
 /*
 invalid csrf token when deleting the cookie at load page.
