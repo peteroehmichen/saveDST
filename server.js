@@ -15,7 +15,6 @@ let errors = {
 };
 let cookie_secret;
 if (process.env.cookie_secret) {
-    // in production
     cookie_secret = process.env.cookie_secret;
 } else {
     cookie_secret = require("./secrets.json").secretOfSession;
