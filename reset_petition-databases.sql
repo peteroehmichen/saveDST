@@ -23,5 +23,6 @@ CREATE TABLE user_profiles (
       age INT, 
       city VARCHAR(100),
       url VARCHAR(300),
+      comment TEXT,
       user_id INT REFERENCES users(id) NOT NULL UNIQUE
 );

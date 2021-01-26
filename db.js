@@ -17,10 +17,18 @@ for heroku if i use a specific user:
 */
 
 // Requests for signatures table
-module.exports.addSignature = (userID, signature) => {
+module.exports.addSignature = (userID, signature, comment) => {
     const params = [userID, signature];
     const q = `INSERT INTO signatures (user_id, signature) VALUES ($1, $2) RETURNING id;`;
-    return sql.query(q, params);
+    // return sql.query(q, params);
+    const promises = [sql.query(q, params)];
+
+    const params2 = [comment, userID];
+    const q2 = `INSERT INTO user_profiles (comment, user_id) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET comment = $1;`;
+
+    promises.push(sql.query(q2, params2));
+
+    return Promise.all(promises);
 };
 
 module.exports.deleteSignature = (userID) => {
@@ -90,6 +98,12 @@ module.exports.getUserProfileByID = (userID) => {
     return sql.query(`SELECT * FROM user_profiles WHERE user_id = $1;`, [
         userID,
     ]);
+};
+
+module.exports.getComments = () => {
+    return sql.query(
+        `SELECT comment FROM user_profiles WHERE length(comment) > 1;`
+    );
 };
 
 module.exports.setProfileData = (age, city, url, userID) => {

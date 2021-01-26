@@ -40,11 +40,11 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next)=>{
-    console.log("Route:", req.url);
-    console.log("Cookie:", req.session);
-    next();
-});
+// app.use((req, res, next)=>{
+//     console.log("Route:", req.url);
+//     console.log("Cookie:", req.session);
+//     next();
+// });
 
 app.get("/", (req, res) => {
     if (req.session.userID) {
@@ -130,6 +130,16 @@ app.get("/new", (req, res) => {
     req.session = null;
     activeUser = {};
     return res.redirect("/");
+});
+
+app.get("/comments.json", (req, res) => {
+    db.getComments()
+        .then((comments) => {
+            let starter = { comment: "This is what other people have to say" };
+            comments.rows.unshift(starter);
+            return res.json(comments.rows);
+        })
+        .catch((err) => console.log("there was an error", err));
 });
 
 // From here on it is only for users!
@@ -230,9 +240,15 @@ app.post("/petition", (req, res) => {
         errors.signature = "signature cannot be empty";
         return res.redirect("/petition");
     } else {
-        db.addSignature(req.session.userID, req.body.sigDataURL)
+        console.log("comment: ", req.body.comment);
+
+        db.addSignature(
+            req.session.userID,
+            req.body.sigDataURL,
+            req.body.comment
+        )
             .then((result) => {
-                if (result.rows[0].rowCount) {
+                if (result[0].rows[0].rowCount) {
                     activeUser.signature = req.body.sigDataURL;
                     return res.redirect("/thanks");
                 } else {

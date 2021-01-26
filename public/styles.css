@@ -370,3 +370,27 @@ td {
     height: 30%;
     background-color: #fff;
 }
+
+.ticker {
+    position: relative;
+    width: 100%;
+    height: 35px;
+    overflow: hidden;
+    /* border-bottom: 5px solid tomato; */
+    background-color: white;
+}
+
+.comments {
+    position: absolute;
+    padding: 5px;
+    height: 100%;
+    top: 5px;
+    left: 50px;
+    white-space: nowrap;
+}
+
+span::after {
+    margin: 0 30px 0 30px;
+    content: "*";
+    color: grey;
+}
