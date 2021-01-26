@@ -268,12 +268,9 @@ app.get("/thanks", (req, res) => {
 });
 
 app.post("/thanks", (req, res) => {
-    // check url for XSS
-    // check PW not empty
-
-    // if (req.body.url != "" && !req.body.url.startsWith("http")) {
-
     if (req.body.confirm) {
+        console.log("confirm pressed");
+        console.log("age=", req.body.new[2], activeUser.age);
         activeUser.age = req.body.new[2];
         activeUser.city = req.body.new[3];
         activeUser.url = req.body.new[4];
@@ -281,24 +278,27 @@ app.post("/thanks", (req, res) => {
             activeUser.first = req.body.new[0];
         }
         if (req.body.new[1] != "") {
-            activeUser.last = req.body.new[0];
+            activeUser.last = req.body.new[1];
         }
         if (req.body.new[5] != "") {
-            activeUser.email = req.body.new[0];
+            activeUser.email = req.body.new[5];
         }
+
         if (activeUser.url != "" && !activeUser.url.startsWith("http")) {
             errors.edit = "Website must include 'http...'";
+            console.log("error for Website-text");
             return res.redirect("/thanks");
-        } else if (activeUser.age != "" && typeof activeUser != "number") {
+        } else if (activeUser.age != "" && typeof activeUser.age != "number") {
             errors.edit = "Age must be empty or a number";
+            console.log("error for Age-text");
             return res.redirect("/thanks");
         } else {
             // continue here...
 
+            console.log("starting DB request.");
             db.changeUserData(activeUser, req.body.new[6], req.session.userID)
                 .then((result) => {
-                    activeUser.first = result.rows[0].first;
-                    activeUser.last = result.rows[0].last;
+                    console.log(result);
                     return res.redirect("/thanks");
                 })
                 .catch(() => {
@@ -374,7 +374,9 @@ app.get("/participants/:city", (req, res) => {
 app.post("/participants", (req, res) => res.redirect(307, "/thanks"));
 app.post("/participants/:city", (req, res) => res.redirect(307, "/thanks"));
 
-app.listen(process.env.PORT || 8080, () => console.log("Petition-Server is listening..."));
+app.listen(process.env.PORT || 8080, () =>
+    console.log("Petition-Server is listening...")
+);
 
 /*
 invalid csrf token when deleting the cookie at load page.

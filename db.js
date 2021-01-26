@@ -3,6 +3,7 @@
 
 // const { decodeBase64 } = require("bcryptjs");
 const spicedPg = require("spiced-pg");
+const { hash } = require("./auth");
 const sql = spicedPg(
     process.env.DATABASE_URL ||
         "postgres:postgres:postgres@localhost:5432/adobo-petition"
@@ -53,38 +54,28 @@ module.exports.addUser = (first, last, email, password) => {
 };
 
 module.exports.changeUserData = (user, password, userID) => {
-    // check if user-mail exists
-    // hash the new password
-    // catch age to be a number
-
-    /*
-1) hash password, then write first, last email pw to user with ID
-    catch error if mail is double
-
-*/
-
-    hash(password)
-        .then((hashedPW) => db.addUser(user.first, user.last, email, hashedPW))
-        .then((result) => {
-            req.session.userID = result.rows[0].id;
-            return res.redirect("/profile");
-        })
-        .catch((err) => {
-            if (err.code == "23505") {
-                errors.register = "email already exists...";
-            } else {
-                errors.register = "unknown DB error while registering user";
-            }
-            return res.redirect("/");
-        });
-
-    const paramUser = [user.first, user.last, user.email];
-    const qUser = ``;
-
+    console.log("starting");
     const promises = [
         module.exports.setProfileData(user.age, user.city, user.url, userID),
     ];
-    return Promise.all([promises]);
+    if (password == "") {
+        promises.push(
+            sql.query(
+                `UPDATE users SET first = $1, last = $2, email = $3 WHERE id = $4;`,
+                [user.first, user.last, user.email, userID]
+            )
+        );
+    } else {
+        promises.push(
+            hash(password).then((hashedPW) =>
+                sql.query(
+                    `UPDATE users SET first = $1, last = $2, email = $3, password = $4 WHERE id = $5;`,
+                    [user.first, user.last, user.email, hashedPW, userID]
+                )
+            )
+        );
+    }
+    return Promise.all(promises);
 };
 
 module.exports.deleteUser = (userID) => {
