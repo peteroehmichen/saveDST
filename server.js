@@ -25,7 +25,7 @@ app.set("view engine", "handlebars");
 app.use(
     cookieSession({
         secret: cookie_secret,
-        maxAge: 1000 * 60 * 60 * 24 * 14,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
     })
 );
 app.use(express.urlencoded({ extended: false }));
@@ -37,6 +37,12 @@ app.use((req, res, next) => {
 app.use(express.static("./public"));
 app.use((req, res, next) => {
     res.setHeader("x-frame-options", "deny");
+    next();
+});
+
+app.use((req, res, next)=>{
+    console.log("Route:", req.url);
+    console.log("Cookie:", req.session);
     next();
 });
 
@@ -53,7 +59,6 @@ app.get("/", (req, res) => {
         }
         return res.render("register", {
             layout: "main",
-            logged: req.session.userID,
             registerError: errorMsg,
             logField: activeLogField,
         });
@@ -109,7 +114,7 @@ app.post("/", (req, res) => {
                         return res.redirect("/");
                     }
                 })
-                .catch((err) => {
+                .catch(() => {
                     errors.register = "user and password do not match";
                     errors.login = "activeCred";
                     return res.redirect("/");
@@ -165,7 +170,7 @@ app.use((req, res, next) => {
                     }
                 }
             })
-            .catch((err) => {
+            .catch(() => {
                 errors.register = "DB Error while loading active user";
                 return res.redirect("/new");
             });
@@ -180,10 +185,8 @@ app.get("/profile", (req, res) => {
     errors.profile = null;
     return res.render("profile", {
         layout: "main",
-        logged: req.session.userID, // I may not need this anymore
         activeUser,
         profileError: errorMsg,
-        reg: true,
     });
 });
 
@@ -217,9 +220,7 @@ app.get("/petition", (req, res) => {
     errors.signature = null;
     return res.render("form", {
         layout: "main",
-        logged: req.session.userID, // I may not need this anymore
         activeUser,
-        reg: true,
         signatureError: errorMsg,
     });
 });
@@ -240,7 +241,7 @@ app.post("/petition", (req, res) => {
                     return res.redirect("/petition");
                 }
             })
-            .catch((err) => {
+            .catch(() => {
                 errors.signature = "Database error - please try again later";
                 return res.redirect("/petition");
             });
@@ -254,11 +255,8 @@ app.get("/thanks", (req, res) => {
             errors.edit = null;
             return res.render("thanks", {
                 layout: "main",
-                logged: req.session.userID,
                 count: result.rows[0].count,
                 activeUser,
-                reg: true,
-                sig: true,
                 editError: errorMsg,
             });
         })
@@ -269,9 +267,7 @@ app.get("/thanks", (req, res) => {
 
 app.post("/thanks", (req, res) => {
     if (req.body.confirm) {
-        console.log("confirm pressed");
-        console.log("age=", req.body.new[2], activeUser.age);
-        activeUser.age = req.body.new[2];
+        activeUser.age = +req.body.new[2];
         activeUser.city = req.body.new[3];
         activeUser.url = req.body.new[4];
         if (req.body.new[0] != "") {
@@ -286,31 +282,28 @@ app.post("/thanks", (req, res) => {
 
         if (activeUser.url != "" && !activeUser.url.startsWith("http")) {
             errors.edit = "Website must include 'http...'";
-            console.log("error for Website-text");
             return res.redirect("/thanks");
-        } else if (activeUser.age != "" && typeof activeUser.age != "number") {
+        } else if (activeUser.age != "" && isNaN(activeUser.age)) {
             errors.edit = "Age must be empty or a number";
-            console.log("error for Age-text");
             return res.redirect("/thanks");
         } else {
-            // continue here...
-
-            console.log("starting DB request.");
             db.changeUserData(activeUser, req.body.new[6], req.session.userID)
-                .then((result) => {
-                    console.log(result);
+                .then(() => {
+                    errors.edit = "✅";
                     return res.redirect("/thanks");
                 })
                 .catch(() => {
-                    errors.register = "Database Error - try again";
-                    errors.login = "activeCred";
-                    return res.redirect("/");
+                    errors.edit = "Database Error - try again";
+                    return res.redirect("/thanks");
                 });
         }
     } else if (req.body.deleteUser) {
         db.deleteUser(req.session.userID)
-            .then(() => res.redirect("/new"))
-            .catch((err) => {
+            .then(() => {
+                errors.register = "User Deleted!";
+                return res.redirect("/new");
+            })
+            .catch(() => {
                 activeUser = {};
                 req.session.userID = null;
                 errors.register = "Database Error - try again";
@@ -321,7 +314,7 @@ app.post("/thanks", (req, res) => {
         activeUser.signature = null;
         db.deleteSignature(req.session.userID)
             .then(() => res.redirect("/petition"))
-            .catch((err) => {
+            .catch(() => {
                 req.session.userID = null;
                 errors.register = "Database Error - try again";
                 errors.login = "activeCred";
@@ -339,10 +332,7 @@ app.get("/participants", (req, res) => {
         .then((result) => {
             return res.render("participants", {
                 layout: "main",
-                logged: req.session.userID,
                 activeUser,
-                reg: true,
-                sig: true,
                 count: result.rows.length,
                 list: result.rows,
             });
@@ -358,10 +348,7 @@ app.get("/participants/:city", (req, res) => {
         .then((result) => {
             return res.render("participants", {
                 layout: "main",
-                logged: req.session.userID,
                 activeUser,
-                reg: true,
-                sig: true,
                 count: result.rows.length,
                 list: result.rows,
             });
@@ -377,15 +364,3 @@ app.post("/participants/:city", (req, res) => res.redirect(307, "/thanks"));
 app.listen(process.env.PORT || 8080, () =>
     console.log("Petition-Server is listening...")
 );
-
-/*
-invalid csrf token when deleting the cookie at load page.
-
-list of participants based on signatures - signatures are not obligatory and after login.
-check of permissing is twofold - pw and signature...
-
-cookie after successful login is the id
-
-how does the user get to delete or view his account without signing?
-
-*/

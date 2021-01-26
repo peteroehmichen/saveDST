@@ -54,7 +54,7 @@ module.exports.addUser = (first, last, email, password) => {
 };
 
 module.exports.changeUserData = (user, password, userID) => {
-    console.log("starting");
+    // console.log("starting");
     const promises = [
         module.exports.setProfileData(user.age, user.city, user.url, userID),
     ];

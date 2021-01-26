@@ -28,7 +28,7 @@ input {
     border-bottom: 2px solid black;
     font-size: 1.1em;
     margin: 10px 0;
-    width: 90%;
+    width: 100%;
 }
 
 form {
@@ -187,6 +187,12 @@ main {
 }
 
 .registerMessage {
+    padding: 5px;
+    width: 100%;
+    height: 10%;
+}
+
+.editMessage {
     padding: 5px;
     width: 100%;
     height: 10%;
@@ -357,4 +363,10 @@ td {
 .sigInList {
     width: 150px;
     height: 30px;
+}
+
+.ticker {
+    width: 100%;
+    height: 30%;
+    background-color: #fff;
 }

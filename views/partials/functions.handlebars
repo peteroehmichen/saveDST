@@ -42,8 +42,10 @@
                     <button type="submit" name="confirm" value="confirm" style="width: 100%">Submit Changes</button>
                     <button type="submit" name="deleteUser" value="delete" style="color: red; width: 40%">delete User</button>
                     <button type="submit" name="sigDel" value="sigDel" style="color: red; width: 40%">delete Signature</button>
-
         </div>
+        <div class="editMessage {{#if editError}}error{{/if}}">
+    {{editError}}
+</div>
     </form>
 </div>
 
