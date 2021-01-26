@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const db = require("./db");
 const cookieSession = require("cookie-session");
-const { secretOfSession } = require("./secrets.json");
+// const { secretOfSession } = require("./secrets.json").secretOfSession;
 const csurf = require("csurf");
 const { hash, compare, setCurrentUserObj } = require("./auth.js");
 let activeUser = {};
@@ -13,12 +13,19 @@ let errors = {
     edit: null,
     login: null,
 };
+let cookie_secret;
+if (process.env.cookie_secret) {
+    // in production
+    cookie_secret = process.env.cookie_secret;
+} else {
+    cookie_secret = require("./secrets.json").secretOfSession;
+}
 
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 app.use(
     cookieSession({
-        secret: secretOfSession,
+        secret: cookie_secret,
         maxAge: 1000 * 60 * 60 * 24 * 14,
     })
 );
