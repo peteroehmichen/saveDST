@@ -11,11 +11,8 @@ body {
     background-size: cover;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 15% 10% 70% 5%;
+    grid-template-rows: 150px 13fr 1fr;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-h1 {
 }
 
 h2 {
@@ -54,13 +51,6 @@ header {
     align-items: center;
 }
 
-header img {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 3%;
-}
-
 .logPic {
     margin: 10px;
     background: #099bdd;
@@ -78,42 +68,87 @@ header img {
 }
 
 nav {
-    /* background-color: #fce38a; */
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(255, 255, 255, 0.4);
     width: 100%;
+    height: 150px;
     display: flex;
-    justify-content: stretch;
-    border: 1px dotted black;
+    justify-content: flex-start;
+    /* border: 1px dotted black; */
 }
 
 nav > div {
-    /* background-color: #eaffd0; */
-    /* background-color: rgba(255, 255, 255, 0.3); */
+    background-color: rgba(255, 255, 255, 0.75);
     text-align: center;
-    padding: 6px;
-    width: 32%;
+    padding: 6px 10px;
+    margin: 10px 10px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.navRegister > .arrow {
-    font-size: 1em;
+.intro {
+    width: 25%;
+    /* flex-grow: 1; */
+    /* border-right: 2px solid black; */
 }
 
-nav > .arrow {
-    width: 4%;
-    font-size: 2.3em;
+.navStatus {
+    position: relative;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* border-right: 2px solid black; */
 }
 
-.navRegister {
-    display: grid;
-    grid-template-columns: 4fr 1fr 4fr;
-    grid-template-rows: 2fr 1fr;
+.logOut {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
-.support {
-    grid-column: 1 / 4;
+.commentBlock {
+    /* max-width: 50%; */
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.carousel {
+    position: relative;
+    /* align-self: stretch; */
+    margin: 0 30px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.carousel > div {
+    position: absolute;
+    transform: translateY(100%);
+    margin: 0 30px;
+    padding: 5px;
+    /* width: 100%; */
+    height: 100%;
+    /* border: 1px solid black; */
+    text-align: left;
+    font-style: italic;
+    overflow: hidden;
+}
+
+.carousel > div.onscreen {
+    transform: translateY(0%);
+    transition-property: transform;
+    transition-duration: 2s;
+}
+
+.carousel > div.exit {
+    transform: translateY(-100%);
+    transition: transform 2s;
 }
 
 main {
@@ -129,7 +164,7 @@ main {
 .leftBox {
     margin: auto 20px;
     background-color: rgba(255, 255, 255, 0.4);
-    width: 33%;
+    width: 40%;
     height: 90%;
     display: flex;
     flex-direction: column;
@@ -208,7 +243,7 @@ main {
 }
 
 .rightBox {
-    width: 55%;
+    width: 50%;
     height: 90%;
     background-color: rgba(255, 255, 255, 0.4);
     padding: 10px;
@@ -222,7 +257,7 @@ main {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -291,7 +326,9 @@ main {
 }
 
 footer {
-    background-color: #95e1d3;
+    background-color: black;
+    color: white;
+    padding: 15px;
 }
 
 .signature {
@@ -365,26 +402,6 @@ td {
     height: 30px;
 }
 
-.ticker {
-    position: relative;
+table {
     width: 100%;
-    height: 35px;
-    overflow: hidden;
-    /* border-bottom: 5px solid tomato; */
-    background-color: transparent;
-}
-
-.comments {
-    position: absolute;
-    padding: 5px;
-    height: 100%;
-    top: 5px;
-    left: 50px;
-    white-space: nowrap;
-}
-
-span::after {
-    margin: 0 30px 0 30px;
-    content: "*";
-    color: grey;
 }

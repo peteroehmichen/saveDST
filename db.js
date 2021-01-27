@@ -22,7 +22,7 @@ module.exports.addSignature = (userID, signature, comment) => {
     const q = `INSERT INTO signatures (user_id, signature) VALUES ($1, $2) RETURNING id;`;
     // return sql.query(q, params);
     const promises = [sql.query(q, params)];
-
+    comment = `${comment}`;
     const params2 = [comment, userID];
     const q2 = `INSERT INTO user_profiles (comment, user_id) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET comment = $1;`;
 
@@ -32,7 +32,14 @@ module.exports.addSignature = (userID, signature, comment) => {
 };
 
 module.exports.deleteSignature = (userID) => {
-    return sql.query(`DELETE FROM signatures WHERE user_id = $1;`, [userID]);
+    return sql
+        .query(`DELETE FROM signatures WHERE user_id = $1;`, [userID])
+        .then(() =>
+            sql.query(
+                `UPDATE user_profiles SET comment = NULL WHERE user_id = $1;`,
+                [userID]
+            )
+        );
 };
 
 module.exports.getSignatureByID = (userID) => {
@@ -101,9 +108,21 @@ module.exports.getUserProfileByID = (userID) => {
 };
 
 module.exports.getComments = () => {
-    return sql.query(
-        `SELECT comment FROM user_profiles WHERE length(comment) > 1;`
-    );
+    return sql
+        .query(`SELECT comment FROM user_profiles WHERE length(comment) > 1;`)
+        .then((comments) => {
+            let mixedComms = [];
+            comments.rows.forEach((element) => {
+                mixedComms.push(element.comment);
+            });
+            for (let i = mixedComms.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [mixedComms[i], mixedComms[j]] = [mixedComms[j], mixedComms[i]];
+            }
+            mixedComms =
+                mixedComms.length > 10 ? mixedComms.slice(0, 9) : mixedComms;
+            return mixedComms;
+        });
 };
 
 module.exports.setProfileData = (age, city, url, userID) => {

@@ -71,8 +71,12 @@
                 if (element.classList.contains("optional")) {
                     element.innerHTML = `<input type="text" name="new" value="${element.innerText}" placeholder="delete data">`;
                 } else if (element.classList.contains("passwordEdit")) {
-                    element.innerHTML = `<input type="text" name="new" placeholder="no changes">`;
-                } else {
+                    element.innerHTML = `<input type="password" name="new" placeholder="no changes">`;
+                } else if (element.classList.contains("emailEdit")) {
+                    element.innerHTML = `<input type="email" name="new" value="${element.innerText}" placeholder="unchanged">`;
+
+                } 
+                else {
                     element.innerHTML = `<input type="text" name="new" value="${element.innerText}" placeholder="unchanged">`;
 
                 }

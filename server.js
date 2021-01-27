@@ -1,12 +1,14 @@
 const hb = require("express-handlebars");
 const express = require("express");
 const app = express();
+exports.app = app;
 const db = require("./db");
 const cookieSession = require("cookie-session");
 // const { secretOfSession } = require("./secrets.json").secretOfSession;
 const csurf = require("csurf");
 const { hash, compare, setCurrentUserObj } = require("./auth.js");
 let activeUser = {};
+exports.activeUser = activeUser;
 let errors = {
     register: null,
     signature: null,
@@ -135,9 +137,7 @@ app.get("/new", (req, res) => {
 app.get("/comments.json", (req, res) => {
     db.getComments()
         .then((comments) => {
-            let starter = { comment: "This is what other people have to say" };
-            comments.rows.unshift(starter);
-            return res.json(comments.rows);
+            return res.json(comments);
         })
         .catch((err) => console.log("there was an error", err));
 });
@@ -159,6 +159,19 @@ app.use((req, res, next) => {
                         activeUser.age = results[1].rows[0].age;
                         activeUser.city = results[1].rows[0].city;
                         activeUser.url = results[1].rows[0].url;
+                        if (
+                            results[1].rows[0].comment == null ||
+                            results[1].rows[0].comment.startsWith('""')
+                        ) {
+                            activeUser.comment = null;
+                        } else {
+                            activeUser.comment = results[1].rows[0].comment;
+                        }
+                        // console.log(
+                        //     "comment1 read:",
+                        //     results[1].rows[0].comment
+                        // );
+                        // console.log("comment1 written:", activeUser.comment);
                     }
                     if (results[2].rowCount) {
                         activeUser.signatureID = results[2].rows[0].id;
@@ -180,7 +193,8 @@ app.use((req, res, next) => {
                     }
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log("err:", err);
                 errors.register = "DB Error while loading active user";
                 return res.redirect("/new");
             });
@@ -240,7 +254,21 @@ app.post("/petition", (req, res) => {
         errors.signature = "signature cannot be empty";
         return res.redirect("/petition");
     } else {
-        console.log("comment: ", req.body.comment);
+        // console.log("comment2 read:", req.body.comment);
+        if (req.body.comment && req.body.comment != "") {
+            let addToComment = `${
+                activeUser.first
+            } ${activeUser.last[0].toUpperCase()}.`;
+            if (activeUser.city) {
+                addToComment += ` from ${activeUser.city}`;
+            }
+            req.body.comment = `"${req.body.comment}" (${addToComment})`;
+            activeUser.comment = req.body.comment;
+        } else {
+            activeUser.comment = null;
+        }
+
+        // console.log("comment2 written:", activeUser.comment);
 
         db.addSignature(
             req.session.userID,
@@ -250,6 +278,7 @@ app.post("/petition", (req, res) => {
             .then((result) => {
                 if (result[0].rows[0].rowCount) {
                     activeUser.signature = req.body.sigDataURL;
+
                     return res.redirect("/thanks");
                 } else {
                     errors.signature =
@@ -328,9 +357,11 @@ app.post("/thanks", (req, res) => {
             });
     } else if (req.body.sigDel) {
         activeUser.signature = null;
+        activeUser.comment = null;
         db.deleteSignature(req.session.userID)
             .then(() => res.redirect("/petition"))
-            .catch(() => {
+            .catch((err) => {
+                // console.log("error deletiong signature: ", err);
                 req.session.userID = null;
                 errors.register = "Database Error - try again";
                 errors.login = "activeCred";
@@ -377,6 +408,8 @@ app.get("/participants/:city", (req, res) => {
 app.post("/participants", (req, res) => res.redirect(307, "/thanks"));
 app.post("/participants/:city", (req, res) => res.redirect(307, "/thanks"));
 
-app.listen(process.env.PORT || 8080, () =>
-    console.log("Petition-Server is listening...")
-);
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () =>
+        console.log("Petition-Server is listening...")
+    );
+}

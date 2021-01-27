@@ -7,7 +7,7 @@
     <title>Petition - Project</title>
 </head>
 <body>
-    <header>
+    {{!-- <header>
         <div class="headline">
             <h1>Become a daylight Savings Saviour</h1> 
         </div>
@@ -15,8 +15,8 @@
             <div class="ticker">
                 <div class="comments"></div>
             </div>
-    </header>
-    <nav>
+    </header> --}}
+    {{!-- <nav>
             <div class="navRegister">
                 <div class="support"><h2>Support our cause</h2></div>
                 <div class="reg">Register & LogIn<br>{{#if activeUser.id}}✅{{else}}❌{{/if}}</div>    
@@ -32,6 +32,25 @@
                 <h2>View other Supporters</h2>
             </div>
 
+    </nav> --}}
+    <nav>
+        <div class="intro">
+            <h2>Show your support in these 3 simple steps!</h2>
+        </div>
+        <div class="navStatus">
+            <p>{{#if activeUser.id}}✅{{else}}❌{{/if}}  Register </p>
+            <p>{{#if activeUser.signature}}✅{{else}}❌{{/if}} Sign the Petition </p>
+            <p>{{#if activeUser.comment}}✅{{else}}❌{{/if}}  Leave a Comment</p>
+            {{#if activeUser.id}}<div class="logOut">
+                <a href="/new"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/OOjs_UI_icon_logOut-rtl.svg" alt="LogOut"></a>
+            </div>{{/if}}
+        </div>
+        <div class="commentBlock">
+            <h4>This is what other supporters say about it</h4>
+            <div class="carousel">
+                <div></div>
+            </div>
+        </div>
     </nav>
     <main>
         {{{body}}}

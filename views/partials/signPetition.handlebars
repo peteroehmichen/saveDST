@@ -2,12 +2,9 @@
 <div class="subframeRight">
     <div class="callToAction">
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab facilis doloribus amet dolorum provident id ipsa quo nihil qui dolores quibusdam, deleniti consequuntur necessitatibus molestiae, accusantium magni tenetur? Fugit, quos?</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab facilis doloribus amet dolorum provident id ipsa quo nihil qui dolores quibusdam, deleniti consequuntur necessitatibus molestiae, accusantium magni tenetur? Fugit, quos?</p>
-        <div class="pointToSignature">
-            <h2>Sign our Petition to proceed...</h2>
-        </div>
     </div>
     <form method="post">
+        <h2>Sign our Petition to proceed...</h2>
         <p>"Save our Sunlight - Pro Daylight Savings Time (DST)!"</p>
         <input name="_csrf" value="{{csrfToken}}" type="hidden">
         <input id="sigDataURL" name="sigDataURL" type="hidden">
@@ -20,7 +17,9 @@
         </div>
         <p>{{activeUser.first}} {{activeUser.last}}</p>
         <div class="comment">
-            <input type="text" name="comment" placeholder="Do you want to publish a comment?">
+            <p>Please tell us how important sunlight is for your evenings.</p>
+            <textarea name="comment" cols="61" rows="3" placeholder="Publish a comment here..."></textarea>
+            {{!-- <input type="text" name="comment" placeholder="Do you want to publish a comment?"> --}}
         </div>
         <button type="submit">Submit</button>
         <div class="sigError">{{#if signatureError}}{{signatureError}}{{/if}}</div>
