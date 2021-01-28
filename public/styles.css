@@ -4,9 +4,8 @@
 }
 
 body {
-    min-height: 100vh;
-    width: 100%;
-    /* background-color: azure; */
+    height: 100vh;
+    width: 100vw;
     background-image: url("./bg2.jpg");
     background-size: cover;
     display: grid;
@@ -31,7 +30,6 @@ input {
 form {
     padding: 5px;
     width: 100%;
-    /* border: 1px dotted black; */
 }
 
 button {
@@ -45,7 +43,6 @@ button {
 header {
     padding: 10px;
     position: relative;
-    /* background-color: #fce38a; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -73,7 +70,6 @@ nav {
     height: 150px;
     display: flex;
     justify-content: flex-start;
-    /* border: 1px dotted black; */
 }
 
 nav > div {
@@ -88,8 +84,9 @@ nav > div {
 
 .intro {
     width: 25%;
-    /* flex-grow: 1; */
-    /* border-right: 2px solid black; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .navStatus {
@@ -108,7 +105,6 @@ nav > div {
 }
 
 .commentBlock {
-    /* max-width: 50%; */
     flex-grow: 2;
     display: flex;
     flex-direction: column;
@@ -119,7 +115,6 @@ nav > div {
 
 .carousel {
     position: relative;
-    /* align-self: stretch; */
     margin: 0 30px;
     width: 100%;
     height: 100%;
@@ -132,9 +127,7 @@ nav > div {
     transform: translateY(100%);
     margin: 0 30px;
     padding: 5px;
-    /* width: 100%; */
     height: 100%;
-    /* border: 1px solid black; */
     text-align: left;
     font-style: italic;
     overflow: hidden;
@@ -152,9 +145,6 @@ nav > div {
 }
 
 main {
-    /* background-image: url("./bg2.jpg"); */
-    /* background-size: cover; */
-    /* background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/DST_begin.svg"); */
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -169,7 +159,6 @@ main {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    /* overflow: auto; */
 }
 
 .credHead {
@@ -292,7 +281,6 @@ main {
 .subframeLeftMain {
     background-color: rgba(255, 255, 255, 0.75);
     width: 100%;
-    /* height: 85%; */
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -331,6 +319,22 @@ footer {
     padding: 15px;
 }
 
+.callToAction {
+    margin-bottom: 30px;
+}
+
+.signatureForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.signatureForm > p {
+    font-style: italic;
+    font-size: smaller;
+}
+
 .signature {
     position: relative;
     display: flex;
@@ -341,6 +345,10 @@ footer {
 canvas {
     border-bottom: 1px dotted black;
     background-color: rgba(0, 0, 0, 0.15);
+}
+
+.comment {
+    margin: 50px 0;
 }
 
 .sigFunctions {
@@ -384,7 +392,6 @@ canvas {
 }
 
 .listedParticipants tr {
-    /* background-color: blueviolet; */
     border-collapse: collapse;
     border-bottom: 1px solid black;
 }
