@@ -83,6 +83,7 @@ app.post("/", (req, res) => {
                     return res.redirect("/profile");
                 })
                 .catch((err) => {
+                    console.log("Promise chain HASH -> ADDUSER Error:", err);
                     if (err.code == "23505") {
                         errors.register = "email already exists...";
                     } else {
@@ -116,13 +117,15 @@ app.post("/", (req, res) => {
                         return res.redirect("/");
                     }
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.log("Promise COMPARE in LogIn Error: ", err);
                     errors.register = "user and password do not match";
                     errors.login = "activeCred";
                     return res.redirect("/");
                 });
         }
     } else {
+        console.log("unknown Error in filling registration or login");
         errors.register = "error during filling of form";
         return res.redirect("/");
     }
@@ -139,7 +142,7 @@ app.get("/comments.json", (req, res) => {
         .then((comments) => {
             return res.json(comments);
         })
-        .catch((err) => console.log("there was an error", err));
+        .catch((err) => console.log("Promise Error while fetching comments:", err));
 });
 
 // From here on it is only for users!
@@ -159,23 +162,15 @@ app.use((req, res, next) => {
                         activeUser.age = results[1].rows[0].age;
                         activeUser.city = results[1].rows[0].city;
                         activeUser.url = results[1].rows[0].url;
-                        if (
-                            results[1].rows[0].comment == null ||
-                            results[1].rows[0].comment.startsWith('""')
-                        ) {
-                            activeUser.comment = null;
-                        } else {
-                            activeUser.comment = results[1].rows[0].comment;
-                        }
-                        // console.log(
-                        //     "comment1 read:",
-                        //     results[1].rows[0].comment
-                        // );
-                        // console.log("comment1 written:", activeUser.comment);
+                        
                     }
                     if (results[2].rowCount) {
                         activeUser.signatureID = results[2].rows[0].id;
                         activeUser.signature = results[2].rows[0].signature;
+                        activeUser.comment = results[2].rows[0].comment
+                            ? results[2].rows[0].comment
+                            : null;
+
                         if (
                             req.url == "/thanks" ||
                             req.url.startsWith("/participants")
@@ -194,7 +189,7 @@ app.use((req, res, next) => {
                 }
             })
             .catch((err) => {
-                console.log("err:", err);
+                console.log("PromiseAll Error in fetching all UserData:", err);
                 errors.register = "DB Error while loading active user";
                 return res.redirect("/new");
             });
@@ -232,7 +227,7 @@ app.post("/profile", (req, res) => {
                 return res.redirect("/petition");
             })
             .catch((err) => {
-                console.log(err);
+                console.log("Promise Error while writing PROFILE:", err);
                 errors.register = "DB Error while writing profile";
                 return res.redirect("/");
             });
@@ -254,39 +249,36 @@ app.post("/petition", (req, res) => {
         errors.signature = "signature cannot be empty";
         return res.redirect("/petition");
     } else {
-        // console.log("comment2 read:", req.body.comment);
-        if (req.body.comment && req.body.comment != "") {
+        if (req.body.commentInput && req.body.commentInput.length > 1) {
             let addToComment = `${
                 activeUser.first
             } ${activeUser.last[0].toUpperCase()}.`;
             if (activeUser.city) {
                 addToComment += ` from ${activeUser.city}`;
             }
-            req.body.comment = `"${req.body.comment}" (${addToComment})`;
-            activeUser.comment = req.body.comment;
+            req.body.commentInput = `"${req.body.commentInput}" (${addToComment})`;
+            activeUser.comment = req.body.commentInput;
         } else {
             activeUser.comment = null;
+            req.body.commentInput = "";
         }
-
-        // console.log("comment2 written:", activeUser.comment);
 
         db.addSignature(
             req.session.userID,
             req.body.sigDataURL,
-            req.body.comment
+            req.body.commentInput
         )
-            .then((result) => {
-                if (result[0].rows[0].rowCount) {
-                    activeUser.signature = req.body.sigDataURL;
-
-                    return res.redirect("/thanks");
-                } else {
-                    errors.signature =
-                        "Database error - please try again later";
-                    return res.redirect("/petition");
-                }
+            .then(() => {
+                activeUser.signature = req.body.sigDataURL;
+                activeUser.comment =
+                    req.body.commentInput == ""
+                        ? null
+                        : req.body.commentInput;
+                return res.redirect("/thanks");
+            
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log("Promise Error in ADD Signature", err);
                 errors.signature = "Database error - please try again later";
                 return res.redirect("/petition");
             });
@@ -334,11 +326,11 @@ app.post("/thanks", (req, res) => {
         } else {
             db.changeUserData(activeUser, req.body.new[6], req.session.userID)
                 .then(() => {
-                    errors.edit = "✅";
                     return res.redirect("/thanks");
                 })
-                .catch(() => {
+                .catch((err) => {
                     errors.edit = "Database Error - try again";
+                    console.log("Promise Error in CHANGE User Data:", err);
                     return res.redirect("/thanks");
                 });
         }
@@ -348,11 +340,12 @@ app.post("/thanks", (req, res) => {
                 errors.register = "User Deleted!";
                 return res.redirect("/new");
             })
-            .catch(() => {
+            .catch((err) => {
                 activeUser = {};
                 req.session.userID = null;
                 errors.register = "Database Error - try again";
                 errors.login = "activeCred";
+                console.log("Promise Error in DELETE User:", err);
                 return res.redirect("/");
             });
     } else if (req.body.sigDel) {
@@ -361,15 +354,18 @@ app.post("/thanks", (req, res) => {
         db.deleteSignature(req.session.userID)
             .then(() => res.redirect("/petition"))
             .catch((err) => {
-                // console.log("error deletiong signature: ", err);
                 req.session.userID = null;
                 errors.register = "Database Error - try again";
                 errors.login = "activeCred";
+                console.log("Promise Error in DELETE Signature:", err);
+
                 return res.redirect("/");
             });
     } else {
         errors.register = "Database Error - try again";
         errors.login = "activeCred";
+        console.log("unknown Error in Editing user:");
+
         return res.redirect("/");
     }
 });
@@ -385,7 +381,7 @@ app.get("/participants", (req, res) => {
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.log("Promise Error in getting List:", err);
         });
 });
 
@@ -401,7 +397,7 @@ app.get("/participants/:city", (req, res) => {
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.log("Promise Error in getting City-List:", err);
         });
 });
 

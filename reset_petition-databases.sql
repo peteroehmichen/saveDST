@@ -15,7 +15,8 @@ CREATE TABLE signatures (
      id SERIAL PRIMARY KEY,
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      user_id INT NOT NULL UNIQUE REFERENCES users(id),
-     signature TEXT NOT NULL CHECK (signature != '')
+     signature TEXT NOT NULL CHECK (signature != ''),
+     comment TEXT
 );
 
 CREATE TABLE user_profiles (
@@ -23,6 +24,5 @@ CREATE TABLE user_profiles (
       age INT, 
       city VARCHAR(100),
       url VARCHAR(300),
-      comment TEXT,
       user_id INT REFERENCES users(id) NOT NULL UNIQUE
 );

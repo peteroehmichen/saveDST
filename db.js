@@ -18,28 +18,25 @@ for heroku if i use a specific user:
 
 // Requests for signatures table
 module.exports.addSignature = (userID, signature, comment) => {
-    const params = [userID, signature];
-    const q = `INSERT INTO signatures (user_id, signature) VALUES ($1, $2) RETURNING id;`;
-    // return sql.query(q, params);
-    const promises = [sql.query(q, params)];
-    comment = `${comment}`;
-    const params2 = [comment, userID];
-    const q2 = `INSERT INTO user_profiles (comment, user_id) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET comment = $1;`;
+    const params = [userID, signature, comment];
+    const q = `INSERT INTO signatures (user_id, signature, comment) VALUES ($1, $2, $3) RETURNING id;`;
+    return sql.query(q, params);
+    // const promises = [sql.query(q, params)];
+    // comment = `${comment}`;
+    // const params2 = [comment, userID];
+    // const q2 = `INSERT INTO user_profiles (comment, user_id) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET comment = $1;`;
+    // if (comment != "") {
+    //     promises.push(sql.query(q2, params2));
+    // } else {
+    //     promises.push(0);
+    // }
 
-    promises.push(sql.query(q2, params2));
-
-    return Promise.all(promises);
+    // return Promise.all(promises);
 };
 
 module.exports.deleteSignature = (userID) => {
     return sql
-        .query(`DELETE FROM signatures WHERE user_id = $1;`, [userID])
-        .then(() =>
-            sql.query(
-                `UPDATE user_profiles SET comment = NULL WHERE user_id = $1;`,
-                [userID]
-            )
-        );
+        .query(`DELETE FROM signatures WHERE user_id = $1;`, [userID]);
 };
 
 module.exports.getSignatureByID = (userID) => {
@@ -109,7 +106,7 @@ module.exports.getUserProfileByID = (userID) => {
 
 module.exports.getComments = () => {
     return sql
-        .query(`SELECT comment FROM user_profiles WHERE length(comment) > 1;`)
+        .query(`SELECT comment FROM signatures WHERE length(comment) > 1;`)
         .then((comments) => {
             let mixedComms = [];
             comments.rows.forEach((element) => {

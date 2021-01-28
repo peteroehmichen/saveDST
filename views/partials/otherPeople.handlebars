@@ -1,19 +1,21 @@
 <div class="subframeRight">
-<h2>we display all {{count}} participants here</h2>
-<table class="listedParticipants">
-    <thead><td>Full Name</td><td>Age</td><td>City</td></thead>
-    <tbody>
-        {{#list}}
-        <tr>
-            <td>{{#if url}}<a href="{{url}}">{{first}} {{last}}</a>{{else}}{{first}} {{last}}{{/if}}</td>
-            <td>{{age}}</td>
-            <td><a href="/participants/{{city}}">{{city}}</a></td>
-        </tr>
-    {{/list}}
-    </tbody>
-</table>
-<p><a href="/thanks">go back!</a></p>
+    <div>
+    <h2>Want to find new friends?</h2>
+    <h2>We have a few suggestions...</h2>
 
+    </div>
+    <table class="listedParticipants">
+        <thead><td>Full Name</td><td>Age</td><td>City</td></thead>
+        <tbody>
+            {{#list}}
+            <tr>
+                <td>{{#if url}}<a href="{{url}}">{{first}} {{last}}</a>{{else}}{{first}} {{last}}{{/if}}</td>
+                <td>{{age}}</td>
+                <td><a href="/participants/{{city}}">{{city}}</a></td>
+            </tr>
+        {{/list}}
+        </tbody>
+    </table>
+
+    <p>If you want to see all people in your home town, just click on the city in the overview. Or <a href="/thanks">go back</a> to the overview</p>
 </div>
-
-

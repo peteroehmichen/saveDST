@@ -18,6 +18,10 @@ h2 {
     font-size: 1.2em;
 }
 
+p {
+    padding-bottom: 5px;
+}
+
 input {
     background-color: transparent;
     border: 0;
@@ -94,6 +98,7 @@ nav > div {
     width: 25%;
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     align-items: flex-start;
     /* border-right: 2px solid black; */
 }
@@ -246,8 +251,20 @@ main {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
+    text-align: center;
+}
+
+.clocks {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.clocks img {
+    width: 50%;
+    border-radius: 5px;
 }
 
 .subframeLeft {
@@ -381,19 +398,19 @@ canvas {
 
 .sigPic img {
     background-color: rgba(0, 0, 0, 0.05);
-    border-bottom: 1px dotted black;
-    width: 400px;
-    height: 80px;
+    border: 5px solid black;
+    border-radius: 10px;
 }
 
 .listedParticipants {
+    width: 70%;
     margin: 10px;
     padding: 5px;
 }
 
-.listedParticipants tr {
-    border-collapse: collapse;
-    border-bottom: 1px solid black;
+.listedParticipants td {
+    border-bottom: 1px dotted black;
+    text-align: left;
 }
 
 thead {
@@ -401,7 +418,7 @@ thead {
 }
 
 td {
-    padding: 5px 20px 5px 5px;
+    padding: 5px 5px 5px 5px;
 }
 
 .sigInList {
