@@ -117,8 +117,7 @@ app.post("/", (req, res) => {
                         return res.redirect("/");
                     }
                 })
-                .catch((err) => {
-                    console.log("Promise COMPARE in LogIn Error: ", err);
+                .catch(() => {
                     errors.register = "user and password do not match";
                     errors.login = "activeCred";
                     return res.redirect("/");
